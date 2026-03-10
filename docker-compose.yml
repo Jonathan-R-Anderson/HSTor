@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  tor_proxy_pool:
+    build: .
+    container_name: tor_proxy_pool
+    env_file:
+      - .env
+    environment:
+      # Point proxy_pool.py at the relay server so it sends RELAY headers
+      RELAY_HOST: relay_server
+      RELAY_PORT: 9999
+    ports:
+      - "1080:1080"
+      - "9050-9100:9050-9100"
+    depends_on:
+      - relay_server
+
+  relay_server:
+    build:
+      context: .
+      dockerfile: Dockerfile.relay
+    container_name: relay_server
+    environment:
+      RELAY_PORT: 9999
+      # Add your outbound source IPs here for true multipath routing.
+      # Leave empty to use the container's default interface.
+      BIND_ADDRESSES: ""
+    ports:
+      - "9999:9999"

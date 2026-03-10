@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+
+WORKDIR /
+
+COPY relay_server.py /
+
+EXPOSE 9999
+
+CMD ["python3", "/relay_server.py"]
